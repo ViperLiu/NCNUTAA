@@ -1,0 +1,36 @@
+body {
+    background-color:#222;
+    color:#FF5;
+    font-family:微軟正黑體;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #444;
+}
+.table-hover tbody #expire:hover td, .table-hover tbody #expire:hover th {
+  background-color: #900;
+}
+#expire:hover{
+    background-color:#F00;
+}
+table{
+    //font-size:15px
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #AAF;
+}
+.navbar-inverse {
+    background-color: #222;
+    border-color: #FFF;
+}
+.modal .modal-dialog .modal-content {
+   /*width: 150px;*/
+   background-color: #222;
+}
+input[type="text"]{
+    background-color:#666 !important;
+    color:#FF5;
+}
+input[type="date"]{
+    background-color:#666 !important;
+    color:#FF5;
+}

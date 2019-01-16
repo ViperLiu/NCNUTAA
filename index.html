@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <title>北友會會員管理系統</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="bootstrap/4.2.1/css/bootstrap.min.css">
+        <!-- <link rel="stylesheet" href="css/index.css?v=2"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
+    <body class="bg-secondary">
+        <div id="content">
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <ul class="navbar-nav">
+                    <a class="navbar-brand" href="http://viperliu.site40.net/index.html">北友會會員管理系統</a>
+                    <li class="nav-item">
+                        <span class="navbar-text">現在學期：{{semesterString}}</span>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#newMember" value="新增會員" v-on:click="initialNewMember">新增會員</button>
+                    </li>
+                </ul>
+            </nav>
+            <div class="container">
+                <table class="table table-sm table-striped table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th>學號</th>
+                            <th>姓名</th>
+                            <th>系所</th>
+                            <th>手機</th>
+                            <th>信箱</th>
+                            <th>加入日期</th>
+                            <th>繳費金額</th>
+                            <th>有效日期</th>
+                            <th>動作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="student in students">
+                            <td class="align-middle">{{ student.sid }}</td>
+                            <td class="align-middle">{{ student.name }}</td>
+                            <td class="align-middle">{{ student.department }}</td>
+                            <td class="align-middle">{{ student.phone }}</td>
+                            <td class="align-middle">{{ student.email }}</td>
+                            <td class="align-middle">{{ student.joindate }}</td>
+                            <td class="align-middle">{{ student.totalpay }}</td>
+                            <td class="align-middle">{{ student.expire }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-secondary" data-toggle="modal" data-target="#editMember" v-on:click="selectStudent(student)">編輯</button>
+                                    <button class="btn btn-secondary" data-toggle="modal" data-target="#newPayRecord" v-on:click="initialPayRecord(student)">繳費</button>
+                                    <button class="btn btn-secondary" data-toggle="modal" data-target="#payRecords" v-on:click="selectStudent(student)">繳費紀錄</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--new member content-->
+            <div class="modal fade" id="newMember" role="dialog">
+                <div class="modal-dialog rounded">
+                    <div class="modal-content bg-dark text-light">
+                        <div class="modal-header">
+                            <h4 class="modal-title">新增會員</h4>
+                            <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="newMemberForm" role="form" class="form-horizontal ">
+                                <div class="form-group" v-if="newMemberData">
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">學號</label></div>
+                                        <div class="col-sm-8 text-left text-light">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.sid"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">姓名</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.name"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">系所</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.department"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">手機</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.phone"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">信箱</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.email"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">加入日期</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="date" class="form-control bg-light" v-model="newMemberData.joindate"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">繳費金額</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.totalpay"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">有效期限</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-model="newMemberData.expire"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-secondary" v-on:click="newMember" data-dismiss="modal">送出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--edit member content-->
+            <div class="modal fade" id="editMember" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-light">
+                        <div class="modal-header">
+                            <h4 class="modal-title">編輯會員資料</h4>
+                            <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editMemberForm" role="form" class="form-horizontal ">
+                                <div class="form-group" v-if="currentStudent">
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">學號</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-bind:value="currentStudent.sid" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">姓名</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.name" v-bind:value="currentStudent.name"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">系所</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.department" v-bind:value="currentStudent.department"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">手機</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.phone" v-bind:value="currentStudent.phone"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">信箱</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.email" v-bind:value="currentStudent.email"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">加入日期</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="date" class="form-control bg-light" v-model="currentStudent.joindate" v-bind:value="currentStudent.joindate"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">繳費金額</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.totalpay" v-bind:value="currentStudent.totalpay"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">有效期限</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-model="currentStudent.expire" v-bind:value="currentStudent.expire"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-secondary" v-on:click="updateMember" data-dismiss="modal">送出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--pay record content-->
+            <div class="modal fade" id="newPayRecord" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-light">
+                        <div class="modal-header">
+                            <h4 class="modal-title">新增繳費紀錄</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="payRecordForm" role="form" class="form-horizontal ">
+                                <div class="form-group" v-if="payRecord">
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">學號</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-bind:value="payRecord.sid" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">姓名</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-bind:value="payRecord.name" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">系所</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-bind:value="payRecord.department" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">繳費日期</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="date" class="form-control bg-light" v-bind:value="payRecord.date" v-model="payRecord.date"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">繳費金額</label></div>
+                                        <div class="col-sm-8 text-left">
+                                            <input type="text" class="form-control bg-light" v-model="payRecord.paid"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right"><label class="control-label">有效期限</label></div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control bg-light" v-model="payRecord.expired"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-secondary" v-on:click="newPayRecord" data-dismiss="modal">送出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--pay record content-->
+            <div class="modal fade" id="payRecords" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-light" v-if="currentStudent">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><i>{{currentStudent.name}} {{currentStudent.sid}}</i>  的繳費紀錄</h3>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="payRecordList" class="table table-hover">
+                                <thead>
+                                    <tr><th>繳費日期</th><th>繳費金額</th><th>有效日期</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="payRecord in currentStudent.paidrecords">
+                                        <td>{{payRecord.date}}</td>
+                                        <td>{{payRecord.paid}}</td>
+                                        <td>{{payRecord.expired}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="js/jquery/jquery-1.12.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="bootstrap/4.2.1/js/bootstrap.min.js"></script>
+        <script src="js/function.js?v=3"></script>
+    </body>
+</html>
